@@ -1,10 +1,10 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Acre {
-  final String name;
-  final String description;
-  final double price;
-  final LatLng coordinates;
+  String name;
+  String description;
+  double price;
+  LatLng? coordinates;
   bool isSold;
 
   Acre({required this.name, required this.description, required this.price, required this.coordinates, this.isSold = false});
@@ -15,9 +15,10 @@ class Acre {
       'description': description,
       'price': price,
       'coordinates': {
-        'latitude': coordinates.latitude,
-        'longitude': coordinates.longitude,
+        'latitude': coordinates?.latitude,
+        'longitude': coordinates?.longitude,
       },
+      'isSold': isSold,
     };
   }
 
@@ -30,6 +31,9 @@ class Acre {
         json['coordinates']['latitude'],
         json['coordinates']['longitude'],
       ),
+      isSold: json['isSold'],
     );
   }
+
+  
 }

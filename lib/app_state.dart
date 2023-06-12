@@ -1,28 +1,50 @@
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:registro_lotes_app/acre.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppState extends ChangeNotifier {
-  String name = '';
-  String description = '';
-  double price = 0.0;
-  String coordinates = '';
+  List<Acre> acres = [];
+  List<Acre> boughtAcres = [];
 
-  void updateName(String newName) {
-    name = newName;
+  void loadAcres() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> acreList = prefs.getStringList('acres') ?? [];
+
+    acres = acreList.map((json) => Acre.fromJson(jsonDecode(json))).toList();
     notifyListeners();
   }
 
-  void updateDescription(String newDescription) {
-    description = newDescription;
+  void saveAcres() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> acreList = acres.map((acre) => jsonEncode(acre.toJson())).toList();
+
+    await prefs.setStringList('acres', acreList);
+  }
+
+  void editAcre(index, Acre editedAcre) {
+    acres[index] = editedAcre;
+    saveAcres();
     notifyListeners();
   }
 
-  void updatePrice(double newPrice) {
-    price = newPrice;
+  void buyAcre(Acre acre) {
+    acre.isSold = true;
+    boughtAcres.add(acre);
+    saveAcres();
     notifyListeners();
   }
 
-  void updateCoordinates(String newCoordinates) {
-    coordinates = newCoordinates;
+  void createAcre(String name, String description, double price, LatLng coordinates) {
+    acres.add(Acre(
+      name: name,
+      description: description,
+      price: price,
+      coordinates: coordinates,
+    ));
+    saveAcres();
     notifyListeners();
   }
 }
