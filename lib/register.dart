@@ -11,14 +11,6 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context, listen: false);
-
-    // Use appState properties in the UI
-    final name = appState.name;
-    final description = appState.description;
-    final price = appState.price;
-    final coordinates = appState.coordinates;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Acre Details'),
@@ -27,10 +19,10 @@ class RegisterScreen extends StatelessWidget {
         children: [
           GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: acre.coordinates,
+              target: acre.coordinates!,
               zoom: 15,
             ),
-            markers: {Marker(markerId: const MarkerId('acre_location'), position: acre.coordinates)},
+            markers: {Marker(markerId: const MarkerId('acre_location'), position: acre.coordinates!)},
           ),
           Positioned(
             top: 20,
@@ -59,7 +51,6 @@ class RegisterScreen extends StatelessWidget {
                   Text(
                     'Price: \$${acre.price.toStringAsFixed(2)}',
                     style: const TextStyle(fontSize: 16),
-                    
                   ),
                 ],
               ),
