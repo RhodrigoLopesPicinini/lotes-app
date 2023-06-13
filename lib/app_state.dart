@@ -37,10 +37,11 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void createAcre(String name, String description, double price, LatLng coordinates) {
+  void createAcre(String description, String address, double size, double price, LatLng coordinates) {
     acres.add(Acre(
-      name: name,
       description: description,
+      address: address,
+      size: size,
       price: price,
       coordinates: coordinates,
     ));
