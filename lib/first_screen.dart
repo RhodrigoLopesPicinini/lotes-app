@@ -23,21 +23,6 @@ class _FirstScreenState extends State<FirstScreen> {
     Provider.of<AppState>(context, listen: false).loadAcres();
   }
 
-
-  _loadAcres() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> acreList = prefs.getStringList('acres') ?? [];
-
-    setState(() {
-      acres = acreList.map((json) => Acre.fromJson(jsonDecode(json))).toList();
-    });
-  }
-
-  _saveAcres() {
-    Provider.of<AppState>(context, listen: false).saveAcres();
-  }
-
-
   void _buyAcre(Acre acre) {
     Provider.of<AppState>(context, listen: false).buyAcre(acre);
   }
@@ -51,30 +36,37 @@ class _FirstScreenState extends State<FirstScreen> {
   showDialog(
     context: context,
     builder: (context) {
-      String name = '';
       String description = '';
+      String address = '';
+      double size = 0.0;
       double price = 0.0;
       LatLng? coordinates;
 
       return AlertDialog(
-        title: const Text('Create Acre'),
+        title: const Text('Registrar Lote'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              decoration: const InputDecoration(labelText: 'Name'),
-              onChanged: (value) {
-                name = value;
-              },
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Description'),
+              decoration: const InputDecoration(labelText: 'Descrição'),
               onChanged: (value) {
                 description = value;
               },
             ),
             TextField(
-              decoration: const InputDecoration(labelText: 'Price'),
+              decoration: const InputDecoration(labelText: 'Endereço'),
+              onChanged: (value) {
+                address = value;
+              },
+            ),
+            TextField(
+              decoration: const InputDecoration(labelText: 'Tamanho (m2)'),
+              onChanged: (value) {
+                size = double.parse(value);
+              },
+            ),
+            TextField(
+              decoration: const InputDecoration(labelText: 'Preço'),
               onChanged: (value) {
                 price = double.parse(value);
               },
@@ -82,9 +74,8 @@ class _FirstScreenState extends State<FirstScreen> {
             ),
             const SizedBox(height: 8.0),
             TextField(
-              decoration: const InputDecoration(labelText: 'Coordinates'),
+              decoration: const InputDecoration(labelText: 'Coordenadas'),
               onChanged: (value) {
-                // Parse the coordinates input into LatLng object
                 List<String> coords = value.split(',');
                 double latitude = double.tryParse(coords[0].trim()) ?? 0.0;
                 double longitude = double.tryParse(coords[1].trim()) ?? 0.0;
@@ -95,18 +86,19 @@ class _FirstScreenState extends State<FirstScreen> {
         ),
         actions: [
           TextButton(
-            child: const Text('Cancel'),
+            child: const Text('Cancelar'),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
           TextButton(
-            child: const Text('Save'),
+            child: const Text('Salvar'),
             onPressed: () {
               if (coordinates != null) {
                 Provider.of<AppState>(context, listen: false).createAcre(
-                  name,
                   description,
+                  address,
+                  size,
                   price,
                   coordinates!,
                 );
@@ -124,32 +116,40 @@ void _openEditAcreDialog(Acre acre, int index) {
   showDialog(
     context: context,
     builder: (context) {
-      String name = acre.name;
       String description = acre.description;
+      String address = acre.address;
+      double size = acre.size;
       double price = acre.price;
       LatLng coordinates = acre.coordinates!;
 
       return AlertDialog(
-        title: const Text('Edit Acre'),
+        title: const Text('Alterar Lote'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              decoration: const InputDecoration(labelText: 'Name'),
-              onChanged: (value) {
-                name = value;
-              },
-              controller: TextEditingController(text: name),
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Description'),
+              decoration: const InputDecoration(labelText: 'Descrição'),
               onChanged: (value) {
                 description = value;
               },
               controller: TextEditingController(text: description),
             ),
             TextField(
-              decoration: const InputDecoration(labelText: 'Price'),
+              decoration: const InputDecoration(labelText: 'Endereço'),
+              onChanged: (value) {
+                address = value;
+              },
+              controller: TextEditingController(text: address),
+            ),
+            TextField(
+              decoration: const InputDecoration(labelText: 'Tamanho (m2)'),
+              onChanged: (value) {
+                size = double.parse(value);
+              },
+              controller: TextEditingController(text: size.toString()),
+            ),
+            TextField(
+              decoration: const InputDecoration(labelText: 'Preço'),
               onChanged: (value) {
                 price = double.parse(value);
               },
@@ -173,18 +173,19 @@ void _openEditAcreDialog(Acre acre, int index) {
         ),
         actions: [
           TextButton(
-            child: const Text('Cancel'),
+            child: const Text('Cancelar'),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
           TextButton(
-            child: const Text('Save'),
+            child: const Text('Salvar'),
             onPressed: () {
               setState(() {
                 Acre editedAcre = Acre(
-                  name: name,
                   description: description,
+                  address: address,
+                  size: size,
                   price: price,
                   coordinates: coordinates,
                 );
@@ -204,9 +205,9 @@ void _openEditAcreDialog(Acre acre, int index) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(children: [
-            const Icon(Icons.grass),
-            const Text('LOTES BUSINESS'),
+        title: Row(children: const [
+            Icon(Icons.grass),
+            Text('LOTES BUSINESS'),
           ],),
         actions: [
           IconButton(
@@ -236,8 +237,7 @@ void _openEditAcreDialog(Acre acre, int index) {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: ListTile(
-                  title: Text(appState.acres[index].name),
-                  subtitle: Text(appState.acres[index].description),
+                  title: Text(appState.acres[index].address, style: const TextStyle(fontSize: 14)),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -246,20 +246,12 @@ void _openEditAcreDialog(Acre acre, int index) {
                         _openEditAcreDialog(appState.acres[index], index);
                       }, 
                       icon: const Icon(Icons.border_color_sharp)),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text('R\$ ${appState.acres[index].price.toStringAsFixed(2)}'),
-                      appState.acres[index].isSold
-                          ? const Text('Em negociação', style: TextStyle(color: Colors.red))
-                          : ElevatedButton(
-                              child: const Text('Negociar'),
-                              onPressed: () {
-                                _buyAcre(appState.acres[index]);
-                              },
-                            ),
                     ],
                   )]),
                   onTap: () {

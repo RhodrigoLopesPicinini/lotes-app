@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
         title: 'Lotes App',
         theme: ThemeData(
           primarySwatch: Colors.green,
+          textTheme: GoogleFonts.promptTextTheme(),
         ),
         home: FirstScreen(),
         debugShowCheckedModeBanner: false,

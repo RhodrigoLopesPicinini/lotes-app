@@ -1,31 +1,41 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Acre {
-  String name;
   String description;
+  String address;
   double price;
+  double size;
   LatLng? coordinates;
   bool isSold;
 
-  Acre({required this.name, required this.description, required this.price, required this.coordinates, this.isSold = false});
+  Acre({
+    required this.description,
+    required this.address,
+    required this.price,
+    required this.size,
+    required this.coordinates,
+    this.isSold = false
+  });
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
       'description': description,
+      'address': address,
       'price': price,
       'coordinates': {
         'latitude': coordinates?.latitude,
         'longitude': coordinates?.longitude,
       },
+      'size': size,
       'isSold': isSold,
     };
   }
 
   factory Acre.fromJson(Map<String, dynamic> json) {
     return Acre(
-      name: json['name'],
       description: json['description'],
+      address: json['address'],
+      size: json['size'].toDouble(),
       price: json['price'].toDouble(),
       coordinates: LatLng(
         json['coordinates']['latitude'],
