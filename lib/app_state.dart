@@ -30,13 +30,6 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void buyAcre(Acre acre) {
-    acre.isSold = true;
-    boughtAcres.add(acre);
-    saveAcres();
-    notifyListeners();
-  }
-
   void createAcre(String description, String address, double size, double price, LatLng coordinates) {
     acres.add(Acre(
       description: description,

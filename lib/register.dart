@@ -15,46 +15,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController _addressController = TextEditingController();
-  LatLng? _coordinates;
-
-  @override
-  void dispose() {
-    _addressController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _fetchLocationFromAddress() async {
-    final address = widget.acre.address;
-    try {
-      List<Location> locations = await locationFromAddress(address);
-      if (locations.isNotEmpty) {
-        setState(() {
-          _coordinates = LatLng(locations.first.latitude, locations.first.longitude);
-        });
-      } else {
-        // Handle case when no location is found for the given address
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Location not found'),
-            content: const Text('Unable to find the location for the given address.'),
-            actions: [
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      }
-    } catch (e) {
-      // Handle any errors that occur during geocoding
-      print('Error fetching location from address: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +26,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: [
           GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: _coordinates ?? widget.acre.coordinates!,
+              target: widget.acre.coordinates!,
               zoom: 12,
             ),
             markers: {
               Marker(
                 markerId: const MarkerId('acre_location'),
-                position: _coordinates ?? widget.acre.coordinates!,
+                position: widget.acre.coordinates!,
               ),
             },
           ),
@@ -137,21 +97,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 'Preço: \$${widget.acre.price.toStringAsFixed(2)}',
                                 style: const TextStyle(fontSize: 18),
                               ),
-                              const SizedBox(height: 20),
-                              Text(
-                                'Search for Address',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              TextField(
-                                controller: _addressController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Address',
-                                ),
-                              ),
-                              ElevatedButton(
-                                child: const Text('Search'),
-                                onPressed: _fetchLocationFromAddress,
-                              ),
                             ],
                           ),
                         ],
@@ -167,4 +112,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
-
