@@ -6,28 +6,22 @@ class Acre {
   double price;
   double size;
   LatLng? coordinates;
-  bool isSold;
 
-  Acre({
-    required this.description,
-    required this.address,
-    required this.price,
-    required this.size,
-    required this.coordinates,
-    this.isSold = false
-  });
+  Acre(
+      {required this.description,
+      required this.address,
+      required this.price,
+      required this.size,
+      required this.coordinates,
+      });
 
   Map<String, dynamic> toJson() {
     return {
       'description': description,
       'address': address,
       'price': price,
-      'coordinates': {
-        'latitude': coordinates?.latitude,
-        'longitude': coordinates?.longitude,
-      },
       'size': size,
-      'isSold': isSold,
+      'coordinates': coordinates,
     };
   }
 
@@ -37,13 +31,7 @@ class Acre {
       address: json['address'],
       size: json['size'].toDouble(),
       price: json['price'].toDouble(),
-      coordinates: LatLng(
-        json['coordinates']['latitude'],
-        json['coordinates']['longitude'],
-      ),
-      isSold: json['isSold'],
+      coordinates: json['coordinates'],
     );
   }
-
-  
 }

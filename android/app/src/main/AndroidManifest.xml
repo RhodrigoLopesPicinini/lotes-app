@@ -1,12 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.registro_lotes_app">
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="registro_lotes_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
         <meta-data android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyBOVB4SCyHwB-Pm4NjtzM3ezrx1f4lkS-w" />
+        android:value="AIzaSyD4IkCNhUZqP3o10a5mgky-ApyqeGsOk08" />
 
         <activity
             android:name=".MainActivity"

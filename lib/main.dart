@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:registro_lotes_app/first_screen.dart';
 
-
 void main() {
   runApp(
     ChangeNotifierProvider(
