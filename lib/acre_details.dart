@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:registro_lotes_app/acre.dart';
-import 'package:registro_lotes_app/app_state.dart';
-import 'package:geocoding/geocoding.dart';
 
-class RegisterScreen extends StatefulWidget {
+class AcreDetailsScreen extends StatefulWidget {
   final Acre acre;
+  final String userName;
+  final String userEmail;
+  final String userPhone;
 
-  const RegisterScreen(this.acre);
+  const AcreDetailsScreen({
+    required this.acre,
+    required this.userName,
+    required this.userEmail,
+    required this.userPhone,
+  });
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _AcreDetailsScreenState createState() => _AcreDetailsScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-
+class _AcreDetailsScreenState extends State<AcreDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           GoogleMap(
             initialCameraPosition: CameraPosition(
               target: widget.acre.coordinates!,
-              zoom: 12,
+              zoom: 16,
             ),
             markers: {
               Marker(
@@ -96,6 +100,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Text(
                                 'Preço: \$${widget.acre.price.toStringAsFixed(2)}',
                                 style: const TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: double.infinity,
+                      child: ExpansionTile(
+                        title: Text(
+                          'Informações do Usuário',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Name: ${widget.userName}',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Email: ${widget.userEmail}',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Phone: ${widget.userPhone}',
+                                style: TextStyle(fontSize: 14),
                               ),
                             ],
                           ),

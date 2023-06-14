@@ -1,36 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
-import 'package:registro_lotes_app/app_state.dart';
-import 'package:registro_lotes_app/register.dart';
+import 'package:registro_lotes_app/states/acres_state.dart';
+import 'package:registro_lotes_app/acre_details.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:registro_lotes_app/account.dart';
 import 'package:registro_lotes_app/acre.dart';
+import 'package:registro_lotes_app/states/users_state.dart';
 
-class FirstScreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
-  _FirstScreenState createState() => _FirstScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _FirstScreenState extends State<FirstScreen> {
-  List<Acre> acres = [];
+class _HomeScreenState extends State<HomeScreen> {
   List<Acre> boughtAcres = [];
 
   @override
   void initState() {
     super.initState();
-    Provider.of<AppState>(context, listen: false).loadAcres();
+    Provider.of<AcresState>(context, listen: false).loadAcres();
   }
 
-  void _editAcre(index, Acre editedAcre) {
-    Provider.of<AppState>(context, listen: false).editAcre(index, editedAcre);
+  void _editAcre(int index, Acre editedAcre) {
+    Provider.of<AcresState>(context, listen: false).editAcre(index, editedAcre);
   }
 
   Future<LatLng> _getCoordinatesFromAddress(String address) async {
     List<Location> locations = await locationFromAddress(address);
     return LatLng(locations.first.latitude, locations.first.longitude);
   }
-
 
   void _openCreateAcreDialog() {
     showDialog(
@@ -87,12 +88,12 @@ class _FirstScreenState extends State<FirstScreen> {
                 LatLng? coordinates = await _getCoordinatesFromAddress(address);
 
                 if (coordinates != null) {
-                  Provider.of<AppState>(context, listen: false).createAcre(
+                  Provider.of<AcresState>(context, listen: false).createAcre(
                     description,
                     address,
                     size,
                     price,
-                    coordinates
+                    coordinates,
                   );
 
                   Navigator.pop(context);
@@ -103,7 +104,8 @@ class _FirstScreenState extends State<FirstScreen> {
                     builder: (context) {
                       return AlertDialog(
                         title: const Text('Erro'),
-                        content: const Text('Não foi possível obter as coordenadas do endereço.'),
+                        content: const Text(
+                            'Não foi possível obter as coordenadas do endereço.'),
                         actions: [
                           TextButton(
                             child: const Text('OK'),
@@ -200,22 +202,23 @@ class _FirstScreenState extends State<FirstScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(children: const [
-          Icon(Icons.grass),
-          Text('LOTES BUSINESS'),
-        ],),
+        title: Row(
+          children: const [
+            Icon(Icons.grass),
+            Text('LOTES BUSINESS'),
+          ],
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.account_circle),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AccountScreen(acres.length)),
+                MaterialPageRoute(builder: (context) => const AccountScreen()),
               );
             },
           ),
@@ -225,10 +228,10 @@ class _FirstScreenState extends State<FirstScreen> {
           ),
         ],
       ),
-      body: Consumer<AppState>(
-        builder: (context, appState, _) {
+      body: Consumer2<AcresState, UsersState>(
+        builder: (context, acresState, usersState, _) {
           return ListView.builder(
-            itemCount: appState.acres.length,
+            itemCount: acresState.acres.length,
             itemBuilder: (context, index) {
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -237,27 +240,37 @@ class _FirstScreenState extends State<FirstScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: ListTile(
-                  title: Text(appState.acres[index].address, style: const TextStyle(fontSize: 14)),
-                  trailing: Row(
+                  title: Text(acresState.acres[index].address,
+                      style: const TextStyle(fontSize: 14)),
+                  trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                    IconButton(
+                      onPressed: () {
+                        _openEditAcreDialog(acresState.acres[index], index);
+                      },
+                      icon: const Icon(Icons.border_color_sharp),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        IconButton(
-                            onPressed: () {
-                              _openEditAcreDialog(appState.acres[index], index);
-                            },
-                            icon: const Icon(Icons.border_color_sharp)),
-                        const SizedBox(width: 10,),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text('R\$ ${appState.acres[index].price.toStringAsFixed(2)}'),
-                          ],
-                        )]),
+                        Text(
+                          'R\$ ${acresState.acres[index].price.toStringAsFixed(2)}',
+                        ),
+                      ],
+                    ),
+                  ]),
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RegisterScreen(appState.acres[index])),
+                      MaterialPageRoute(
+                        builder: (context) => AcreDetailsScreen(
+                          acre: acresState.acres[index],
+                          userName: usersState.user.name,
+                          userEmail: usersState.user.email,
+                          userPhone: usersState.user.phoneNumber,
+                        ),
+                      ),
                     );
                   },
                 ),
