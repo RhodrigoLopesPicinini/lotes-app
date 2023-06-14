@@ -5,9 +5,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:registro_lotes_app/acre.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AppState extends ChangeNotifier {
+class AcresState extends ChangeNotifier {
   List<Acre> acres = [];
-  List<Acre> boughtAcres = [];
 
   void loadAcres() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -19,7 +18,8 @@ class AppState extends ChangeNotifier {
 
   void saveAcres() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> acreList = acres.map((acre) => jsonEncode(acre.toJson())).toList();
+    List<String> acreList =
+        acres.map((acre) => jsonEncode(acre.toJson())).toList();
 
     await prefs.setStringList('acres', acreList);
   }
@@ -30,7 +30,8 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void createAcre(String description, String address, double size, double price, LatLng coordinates) {
+  void createAcre(String description, String address, double size, double price,
+      LatLng coordinates) {
     acres.add(Acre(
       description: description,
       address: address,
