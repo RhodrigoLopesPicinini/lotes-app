@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:registro_lotes_app/acre.dart';
+import 'package:registro_lotes_app/features/acre.dart';
 
 class AcreDetailsScreen extends StatefulWidget {
   final Acre acre;
@@ -56,7 +56,7 @@ class _AcreDetailsScreenState extends State<AcreDetailsScreen> {
                     Container(
                       width: double.infinity,
                       child: ExpansionTile(
-                        title: Text(
+                        title: const Text(
                           'Informações',
                           style: TextStyle(fontSize: 18),
                         ),

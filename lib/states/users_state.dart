@@ -1,21 +1,19 @@
 import 'package:flutter/cupertino.dart';
-import 'package:registro_lotes_app/acre.dart';
-import 'package:registro_lotes_app/user.dart';
+import 'package:registro_lotes_app/features/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UsersState with ChangeNotifier {
   late User _user;
-  List<Acre> _acres = [];
 
   UsersState() {
-    // Initialize the user with default values
     _user = User(
         name: 'John Doe',
         email: 'john.doe@example.com',
         phoneNumber: '123-456-7890',
-        createdAcres: _acres.length);
+    );
   }
 
+  // ver uso dos getters e setters
   User get user => _user;
 
   set user(User user) {
@@ -28,7 +26,6 @@ class UsersState with ChangeNotifier {
     prefs.setString('name', _user.name);
     prefs.setString('email', _user.email);
     prefs.setString('phoneNumber', _user.phoneNumber);
-    prefs.setInt('createdAcres', _acres.length);
   }
 
   void editUser(String name, String email, String phoneNumber) {
@@ -38,6 +35,4 @@ class UsersState with ChangeNotifier {
     notifyListeners();
     saveUser();
   }
-
-// Rest of the code for managing the acres list...
 }
