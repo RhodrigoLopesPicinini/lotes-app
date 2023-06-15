@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
-import 'package:registro_lotes_app/states/acres_state.dart';
-import 'package:registro_lotes_app/acre_details.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:registro_lotes_app/account.dart';
-import 'package:registro_lotes_app/acre.dart';
+import 'package:registro_lotes_app/features/acre.dart';
 import 'package:registro_lotes_app/states/users_state.dart';
+import 'package:registro_lotes_app/states/acres_state.dart';
+import 'package:registro_lotes_app/screens/acre_details.dart';
+import 'package:registro_lotes_app/screens/account.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -16,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Acre> boughtAcres = [];
 
   @override
   void initState() {
@@ -86,8 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Text('Salvar'),
               onPressed: () async {
                 LatLng? coordinates = await _getCoordinatesFromAddress(address);
-
-                if (coordinates != null) {
                   Provider.of<AcresState>(context, listen: false).createAcre(
                     description,
                     address,
@@ -95,30 +92,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     price,
                     coordinates,
                   );
-
                   Navigator.pop(context);
-                } else {
-                  // Handle error case when coordinates are not found for the address.
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Erro'),
-                        content: const Text(
-                            'Não foi possível obter as coordenadas do endereço.'),
-                        actions: [
-                          TextButton(
-                            child: const Text('OK'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
+               },
             ),
           ],
         );
@@ -233,24 +208,20 @@ class _HomeScreenState extends State<HomeScreen> {
           return ListView.builder(
             itemCount: acresState.acres.length,
             itemBuilder: (context, index) {
-              return Container(
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.green),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ListTile(
-                  title: Text(acresState.acres[index].address,
-                      style: const TextStyle(fontSize: 14)),
-                  trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                    IconButton(
-                      onPressed: () {
-                        _openEditAcreDialog(acresState.acres[index], index);
-                      },
-                      icon: const Icon(Icons.border_color_sharp),
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
+              return GestureDetector(
+                onLongPress: () {
+                  _openEditAcreDialog(acresState.acres[index], index);
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ListTile(
+                    title: Text(acresState.acres[index].address,
+                        style: const TextStyle(fontSize: 14)),
+                    trailing: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -259,20 +230,20 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                  ]),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AcreDetailsScreen(
-                          acre: acresState.acres[index],
-                          userName: usersState.user.name,
-                          userEmail: usersState.user.email,
-                          userPhone: usersState.user.phoneNumber,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AcreDetailsScreen(
+                            acre: acresState.acres[index],
+                            userName: usersState.user.name,
+                            userEmail: usersState.user.email,
+                            userPhone: usersState.user.phoneNumber,
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               );
             },
