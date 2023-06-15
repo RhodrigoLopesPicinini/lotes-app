@@ -1,181 +1,14 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:registro_lotes_app/features/acre.dart';
+import 'package:registro_lotes_app/screens/account.dart';
 import 'package:registro_lotes_app/states/users_state.dart';
 import 'package:registro_lotes_app/states/acres_state.dart';
+import 'package:registro_lotes_app/utils/dialog_utils.dart';
 import 'package:registro_lotes_app/screens/acre_details.dart';
-import 'package:registro_lotes_app/screens/account.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<AcresState>(context, listen: false).loadAcres();
-  }
-
-  void _editAcre(int index, Acre editedAcre) {
-    Provider.of<AcresState>(context, listen: false).editAcre(index, editedAcre);
-  }
-
-  Future<LatLng> _getCoordinatesFromAddress(String address) async {
-    List<Location> locations = await locationFromAddress(address);
-    return LatLng(locations.first.latitude, locations.first.longitude);
-  }
-
-  void _openCreateAcreDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        String description = '';
-        String address = '';
-        double size = 0.0;
-        double price = 0.0;
-
-        return AlertDialog(
-          title: const Text('Registrar Lote'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: const InputDecoration(labelText: 'Descrição'),
-                onChanged: (value) {
-                  description = value;
-                },
-              ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Endereço'),
-                onChanged: (value) {
-                  address = value;
-                },
-              ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Tamanho (m2)'),
-                onChanged: (value) {
-                  size = double.parse(value);
-                },
-              ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Preço'),
-                onChanged: (value) {
-                  price = double.parse(value);
-                },
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 8.0),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancelar'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              child: const Text('Salvar'),
-              onPressed: () async {
-                LatLng? coordinates = await _getCoordinatesFromAddress(address);
-                  Provider.of<AcresState>(context, listen: false).createAcre(
-                    description,
-                    address,
-                    size,
-                    price,
-                    coordinates,
-                  );
-                  Navigator.pop(context);
-               },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _openEditAcreDialog(Acre acre, int index) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        String description = acre.description;
-        String address = acre.address;
-        double size = acre.size;
-        double price = acre.price;
-
-        return AlertDialog(
-          title: const Text('Alterar Lote'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: const InputDecoration(labelText: 'Descrição'),
-                onChanged: (value) {
-                  description = value;
-                },
-                controller: TextEditingController(text: description),
-              ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Endereço'),
-                onChanged: (value) {
-                  address = value;
-                },
-                controller: TextEditingController(text: address),
-              ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Tamanho (m2)'),
-                onChanged: (value) {
-                  size = double.parse(value);
-                },
-                controller: TextEditingController(text: size.toString()),
-              ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Preço'),
-                onChanged: (value) {
-                  price = double.parse(value);
-                },
-                keyboardType: TextInputType.number,
-                controller: TextEditingController(text: price.toString()),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancelar'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              child: const Text('Salvar'),
-              onPressed: () async {
-                LatLng? coordinates = await _getCoordinatesFromAddress(address);
-
-                setState(() {
-                  Acre editedAcre = Acre(
-                    description: description,
-                    address: address,
-                    size: size,
-                    price: price,
-                    coordinates: coordinates,
-                  );
-                  _editAcre(index, editedAcre);
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: _openCreateAcreDialog,
+            onPressed: () => AcreDialogUtils().openCreateAcreDialog(context),
           ),
         ],
       ),
@@ -210,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onLongPress: () {
-                  _openEditAcreDialog(acresState.acres[index], index);
+                  AcreDialogUtils().openEditAcreDialog(context, acresState.acres[index], index);
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -219,14 +52,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: ListTile(
-                    title: Text(acresState.acres[index].address,
-                        style: const TextStyle(fontSize: 14)),
+                    title: Text(
+                      acresState.acres[index].address,
+                      style: const TextStyle(fontSize: 14),
+                    ),
                     trailing: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          'R\$ ${acresState.acres[index].price.toStringAsFixed(2)}',
+                          'R\$${NumberFormat.currency(locale: 'pt_BR', symbol: '').format(acresState.acres[index].price)}',
                         ),
                       ],
                     ),

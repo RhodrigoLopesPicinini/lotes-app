@@ -3,14 +3,14 @@ import 'package:registro_lotes_app/features/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UsersState with ChangeNotifier {
-  late User _user;
+  User _user = User(
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    phoneNumber: '123-456-7890',
+  );
 
   UsersState() {
-    _user = User(
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phoneNumber: '123-456-7890',
-    );
+    _loadUser();
   }
 
   // ver uso dos getters e setters
@@ -19,6 +19,14 @@ class UsersState with ChangeNotifier {
   set user(User user) {
     _user = user;
     notifyListeners();
+  }
+
+  void _loadUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String name = prefs.getString('name') ?? '';
+    String email = prefs.getString('email') ?? '';
+    String phoneNumber = prefs.getString('phoneNumber') ?? '';
+    _user = User(name: name, email: email, phoneNumber: phoneNumber);
   }
 
   void saveUser() async {
@@ -32,7 +40,8 @@ class UsersState with ChangeNotifier {
     _user.name = name;
     _user.email = email;
     _user.phoneNumber = phoneNumber;
-    notifyListeners();
     saveUser();
+    notifyListeners();
   }
+
 }
