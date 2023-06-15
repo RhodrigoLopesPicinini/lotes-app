@@ -1,17 +1,14 @@
-# registro_lotes_app
+# LOTES BUSINESS
 
-A new Flutter project.
+Projeto desenvolvido utilizando Flutter/Dart com o propósito de servir como um protótipo de um marketplace para venda de lotes, com funcinalidades iniciais de conta de usuário, registro de lote por informações gerais, incluindo localização por endereço no google maps API e integração com a dependência Geocoding para resgatar coordenadas de endereço de texto.
 
-## Getting Started
+## Dependências
+> [Arquivo de dependências](pubspec.yaml)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# lotes-app
+### Lista de dependências
+- [Shared Preferences](https://pub.dev/packages/shared_preferences)
+- [Google Maps Flutter](https://pub.dev/packages/google_maps_flutter)
+- [Provider](https://pub.dev/packages/provider)
+- [Geocoding](https://pub.dev/packages/geocoding)
+- [Google Fonts](https://pub.dev/packages/google_fonts)
+- [Intl](https://pub.dev/packages/intl)

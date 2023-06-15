@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:registro_lotes_app/states/acres_state.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:registro_lotes_app/home_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:registro_lotes_app/states/users_state.dart';
+import 'package:registro_lotes_app/states/acres_state.dart';
+import 'package:registro_lotes_app/screens/home_screen.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -11,11 +11,13 @@ void main() {
       ChangeNotifierProvider(create: (_) => AcresState()),
       ChangeNotifierProvider(create: (_) => UsersState()),
     ],
-    child: MyApp(),
+    child: const MyApp(),
   ));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
           textTheme: GoogleFonts.promptTextTheme(),
         ),
-        home: HomeScreen(),
+        home: const HomeScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );

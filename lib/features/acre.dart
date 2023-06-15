@@ -21,7 +21,7 @@ class Acre {
       'address': address,
       'price': price,
       'size': size,
-      'coordinates': coordinates,
+      'coordinates': coordinates?.toJson(),
     };
   }
 
@@ -31,7 +31,9 @@ class Acre {
       address: json['address'],
       size: json['size'].toDouble(),
       price: json['price'].toDouble(),
-      coordinates: json['coordinates'],
+      coordinates: json['coordinates'] != null
+        ? LatLng(json['coordinates'][0], json['coordinates'][1])
+        : null,
     );
   }
 }
