@@ -32,7 +32,6 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.0.6
   google_maps_flutter: ^2.2.0
-  location: ^4.3.0
   provider: ^5.0.0
   geocoding: ^2.1.0
   intl: ^0.18.1
