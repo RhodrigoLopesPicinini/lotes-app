@@ -1,4 +1,4 @@
-# LOTES BUSINESS
+# PlotMarket
 
 Projeto desenvolvido utilizando Flutter/Dart com o propósito de servir como um protótipo de um marketplace para venda de lotes, com funcinalidades iniciais de conta de usuário, registro de lote por informações gerais, incluindo localização por endereço no google maps API e integração com a dependência Geocoding para resgatar coordenadas de endereço de texto.
 

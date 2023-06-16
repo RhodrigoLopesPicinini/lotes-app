@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UsersState()),
       ],
       child: MaterialApp(
-        title: 'Lotes App',
+        title: 'PlotMarket App',
         theme: ThemeData(
           primarySwatch: Colors.green,
           textTheme: GoogleFonts.promptTextTheme(),
