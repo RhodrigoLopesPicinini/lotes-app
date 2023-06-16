@@ -20,12 +20,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AcresState()),
-        ChangeNotifierProvider(create: (_) => UsersState()),
-      ],
-      child: MaterialApp(
+    return MaterialApp(
         title: 'PlotMarket App',
         theme: ThemeData(
           primarySwatch: Colors.green,
@@ -33,7 +28,6 @@ class MyApp extends StatelessWidget {
         ),
         home: const HomeScreen(),
         debugShowCheckedModeBanner: false,
-      ),
     );
   }
 }
