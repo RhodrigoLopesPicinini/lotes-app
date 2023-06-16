@@ -51,7 +51,6 @@ class AcreDetailsScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(
-                      // width: double.infinity,
                       child: ExpansionTile(
                         title: const Text(
                           'Informações',
