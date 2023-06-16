@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
         title: Row(
           children: const [
             Icon(Icons.grass),
-            Text('LOTES BUSINESS'),
+            Text('PlotMarket'),
           ],
         ),
         actions: [
