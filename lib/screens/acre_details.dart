@@ -115,7 +115,7 @@ class AcreDetailsScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Name: $userName',
+                                'Nome: $userName',
                                 style: const TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 10),
@@ -125,7 +125,7 @@ class AcreDetailsScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                'Phone: $userPhone',
+                                'Celular: $userPhone',
                                 style: const TextStyle(fontSize: 16),
                               ),
                             ],
